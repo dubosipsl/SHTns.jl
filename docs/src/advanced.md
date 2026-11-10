@@ -75,6 +75,29 @@ d2_gpu ≈ d_gpu #true
 ```
 
 
+### Single precision on CUDA
+
+Use `float32=true` when creating the GPU configuration and pass `Float32`
+spatial arrays or `ComplexF32` spectral arrays:
+
+```julia
+cfg32 = SHTnsCfg(64; shtype=SHTns.QuickInit(; gpu=true, float32=true))
+θ, ϕ = SHTns.grid(cfg32)
+d32 = CuArray(Float32.(0.3 .* sin.(ϕ') .* sin.(θ)))
+q32 = SHTns.analys(cfg32, d32)  # CuArray{ComplexF32}
+d32_reconstructed = SHTns.synth(cfg32, q32)  # CuArray{Float32}
+```
+
+Both allocating and in-place scalar, tangential-vector and three-component
+transforms support single precision, including batches. For batches, keep
+`contiguous_phi=false`. Analysis with `analys!` overwrites the spatial inputs,
+as in double precision.
+
+The precision is fixed by the configuration: use a separate configuration for
+Float64 arrays. CUDA calls with an incompatible precision throw `ArgumentError`
+before entering the C library. Float32 CPU transforms are not supported.
+
+
 !!! note
 	ROCm GPUs may be supported in future releases of SHTns.jl (already available in the C library).
 

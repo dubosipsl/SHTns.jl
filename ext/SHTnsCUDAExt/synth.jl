@@ -1,6 +1,6 @@
-function synth(cfg::SHTnsCfg{TR,T,N}, qlm::CuArray{ComplexF64}) where {TR,T,N}
-    Tv = TR == Real ? Float64 : ComplexF64 
-    @assert cfg.shtype.gpu
+function synth(cfg::SHTnsCfg{TR,T,N}, qlm::CuArray{Complex{F}}) where {TR,T,N,F<:Union{Float32,Float64}}
+    Tv = TR == Real ? F : Complex{F}
+    check_precision(cfg, F)
     @assert cfg.nlat != 0
     @assert length(qlm) == nlm(cfg)*cfg.howmany
 
@@ -12,9 +12,9 @@ function synth(cfg::SHTnsCfg{TR,T,N}, qlm::CuArray{ComplexF64}) where {TR,T,N}
     return v
 end
 
-function synth(cfg::SHTnsCfg{TR,T,N}, slm::CuArray{ComplexF64}, tlm::CuArray{ComplexF64}) where {TR,T,N}
-    Tv = TR == Real ? Float64 : ComplexF64 
-    @assert cfg.shtype.gpu
+function synth(cfg::SHTnsCfg{TR,T,N}, slm::CuArray{Complex{F}}, tlm::CuArray{Complex{F}}) where {TR,T,N,F<:Union{Float32,Float64}}
+    Tv = TR == Real ? F : Complex{F}
+    check_precision(cfg, F)
     @assert cfg.nlat != 0
     @assert length(slm) == length(tlm) == nlm(cfg)*cfg.howmany
 
@@ -27,9 +27,9 @@ function synth(cfg::SHTnsCfg{TR,T,N}, slm::CuArray{ComplexF64}, tlm::CuArray{Com
     return utheta, uphi
 end
 
-function synth(cfg::SHTnsCfg{TR,T,N}, qlm::CuArray{ComplexF64}, slm::CuArray{ComplexF64}, tlm::CuArray{ComplexF64}) where {TR,T,N}
-    Tv = TR == Real ? Float64 : ComplexF64 
-    @assert cfg.shtype.gpu
+function synth(cfg::SHTnsCfg{TR,T,N}, qlm::CuArray{Complex{F}}, slm::CuArray{Complex{F}}, tlm::CuArray{Complex{F}}) where {TR,T,N,F<:Union{Float32,Float64}}
+    Tv = TR == Real ? F : Complex{F}
+    check_precision(cfg, F)
     @assert cfg.nlat != 0
     @assert length(qlm) == length(slm) == length(tlm) == nlm(cfg)*cfg.howmany
     nx = cfg.shtype.contiguous_phi ? cfg.nphi : cfg.nlat_padded
@@ -43,23 +43,24 @@ function synth(cfg::SHTnsCfg{TR,T,N}, qlm::CuArray{ComplexF64}, slm::CuArray{Com
 end
 
 
-function synth!(cfg::SHTnsCfg{Real,T,N}, qlm::CuArray{ComplexF64}, v::CuArray{Float64}) where {T,N}
-    @assert cfg.shtype.gpu
+function synth!(cfg::SHTnsCfg{Real,T,N}, qlm::CuArray{Complex{F}}, v::CuArray{F}) where {T,N,F<:Union{Float32,Float64}}
+    check_precision(cfg, F)
     cu_SH_to_spat(cfg.cfg, qlm, v, cfg.lmax)
     return v
 end
 
-function synth!(cfg::SHTnsCfg{Real,T,N}, slm::CuArray{ComplexF64}, tlm::CuArray{ComplexF64}, utheta::Tv, uphi::Tv) where {T,N,Tv<:CuArray{Float64}}
-    @assert cfg.shtype.gpu
+function synth!(cfg::SHTnsCfg{Real,T,N}, slm::CuArray{Complex{F}}, tlm::CuArray{Complex{F}}, utheta::Tv, uphi::Tv) where {T,N,F<:Union{Float32,Float64},Tv<:CuArray{F}}
+    check_precision(cfg, F)
     cu_SHsphtor_to_spat(cfg.cfg, slm, tlm, utheta, uphi, cfg.lmax)
     return utheta, uphi
 end
 
-function synth!(cfg::SHTnsCfg{Real,T,N}, qlm::CuArray{ComplexF64}, slm::CuArray{ComplexF64}, tlm::CuArray{ComplexF64}, ur::Tv, utheta::Tv, uphi::Tv) where {T,N,Tv<:CuArray{Float64}}
-    @assert cfg.shtype.gpu
+function synth!(cfg::SHTnsCfg{Real,T,N}, qlm::CuArray{Complex{F}}, slm::CuArray{Complex{F}}, tlm::CuArray{Complex{F}}, ur::Tv, utheta::Tv, uphi::Tv) where {T,N,F<:Union{Float32,Float64},Tv<:CuArray{F}}
+    check_precision(cfg, F)
     cu_SHqst_to_spat(cfg.cfg, qlm, slm, tlm, ur, utheta, uphi, cfg.lmax)
     return ur, utheta, uphi
 end
+
 
 #complex to complex not available for CUDA (status: SHTns v3.7)
 

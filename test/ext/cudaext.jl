@@ -83,3 +83,5 @@ using SHTns
 	end
 	
 end
+
+include("float32.jl")

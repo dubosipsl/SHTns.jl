@@ -1,23 +1,48 @@
 function cu_spat_to_SH(cfg, Vr::CuArray{Float64}, Qlm::CuArray{Complex{Float64}}, lmax)
-    ccall((:cu_spat_to_SH, libshtns), Nothing, (shtns_cfg, CuPtr{Float64}, CuPtr{Complex{Float64}}, Clong), cfg, Vr, Qlm, lmax)
+    ccall((:cu_spat_to_SH, libshtns), Nothing, (shtns_cfg, CuPtr{Float64}, CuPtr{Complex{Float64}}, Cint), cfg, Vr, Qlm, lmax)
 end
 
 function cu_SH_to_spat(cfg, Qlm::CuArray{Complex{Float64}}, Vr::CuArray{Float64}, lmax)
-    ccall((:cu_SH_to_spat, libshtns), Nothing, (shtns_cfg, CuPtr{Complex{Float64}}, CuPtr{Float64}, Clong), cfg, Qlm, Vr, lmax)
+    ccall((:cu_SH_to_spat, libshtns), Nothing, (shtns_cfg, CuPtr{Complex{Float64}}, CuPtr{Float64}, Cint), cfg, Qlm, Vr, lmax)
 end
 
 function cu_spat_to_SHsphtor(cfg, Vt::CuArray{Float64}, Vp::CuArray{Float64}, Slm::CuArray{Complex{Float64}}, Tlm::CuArray{Complex{Float64}}, lmax)
-    ccall((:cu_spat_to_SHsphtor, libshtns), Nothing, (shtns_cfg,CuPtr{Float64},CuPtr{Float64},CuPtr{ComplexF64},CuPtr{ComplexF64}, Clong), cfg, Vt, Vp, Slm, Tlm, lmax)
+    ccall((:cu_spat_to_SHsphtor, libshtns), Nothing, (shtns_cfg,CuPtr{Float64},CuPtr{Float64},CuPtr{ComplexF64},CuPtr{ComplexF64}, Cint), cfg, Vt, Vp, Slm, Tlm, lmax)
 end
 
 function cu_SHsphtor_to_spat(cfg, Slm::CuArray{Complex{Float64}}, Tlm::CuArray{Complex{Float64}}, Vt::CuArray{Float64}, Vp::CuArray{Float64}, lmax)
-    ccall((:cu_SHsphtor_to_spat, libshtns), Nothing, (shtns_cfg,CuPtr{ComplexF64},CuPtr{ComplexF64},CuPtr{Float64},CuPtr{Float64}, Clong), cfg, Slm, Tlm, Vt, Vp, lmax)
+    ccall((:cu_SHsphtor_to_spat, libshtns), Nothing, (shtns_cfg,CuPtr{ComplexF64},CuPtr{ComplexF64},CuPtr{Float64},CuPtr{Float64}, Cint), cfg, Slm, Tlm, Vt, Vp, lmax)
 end
 
 function cu_spat_to_SHqst(cfg, Vr::CuArray{Float64}, Vt::CuArray{Float64}, Vp::CuArray{Float64}, Qlm::CuArray{Complex{Float64}}, Slm::CuArray{Complex{Float64}}, Tlm::CuArray{Complex{Float64}}, lmax)
-    ccall((:cu_spat_to_SHqst, libshtns), Nothing, (shtns_cfg,CuPtr{Float64},CuPtr{Float64},CuPtr{Float64},CuPtr{ComplexF64},CuPtr{ComplexF64},CuPtr{ComplexF64}, Clong), cfg, Vr, Vt, Vp, Qlm, Slm, Tlm, lmax)
+    ccall((:cu_spat_to_SHqst, libshtns), Nothing, (shtns_cfg,CuPtr{Float64},CuPtr{Float64},CuPtr{Float64},CuPtr{ComplexF64},CuPtr{ComplexF64},CuPtr{ComplexF64}, Cint), cfg, Vr, Vt, Vp, Qlm, Slm, Tlm, lmax)
 end
 
 function cu_SHqst_to_spat(cfg, Qlm::CuArray{Complex{Float64}}, Slm::CuArray{Complex{Float64}}, Tlm::CuArray{Complex{Float64}}, Vr::CuArray{Float64}, Vt::CuArray{Float64}, Vp::CuArray{Float64}, lmax)
-    ccall((:cu_SHqst_to_spat, libshtns), Nothing, (shtns_cfg,CuPtr{ComplexF64},CuPtr{ComplexF64},CuPtr{ComplexF64},CuPtr{Float64},CuPtr{Float64},CuPtr{Float64}, Clong), cfg, Qlm, Slm, Tlm, Vr, Vt, Vp, lmax)
+    ccall((:cu_SHqst_to_spat, libshtns), Nothing, (shtns_cfg,CuPtr{ComplexF64},CuPtr{ComplexF64},CuPtr{ComplexF64},CuPtr{Float64},CuPtr{Float64},CuPtr{Float64}, Cint), cfg, Qlm, Slm, Tlm, Vr, Vt, Vp, lmax)
+end
+
+# Single-precision on-device transforms (SHT_FP32 configuration).
+function cu_spat_to_SH(cfg, Vr::CuArray{Float32}, Qlm::CuArray{Complex{Float32}}, lmax)
+    ccall((:cu_spat_to_SH_float, libshtns), Nothing, (shtns_cfg, CuPtr{Float32}, CuPtr{Complex{Float32}}, Cint), cfg, Vr, Qlm, lmax)
+end
+
+function cu_SH_to_spat(cfg, Qlm::CuArray{Complex{Float32}}, Vr::CuArray{Float32}, lmax)
+    ccall((:cu_SH_to_spat_float, libshtns), Nothing, (shtns_cfg, CuPtr{Complex{Float32}}, CuPtr{Float32}, Cint), cfg, Qlm, Vr, lmax)
+end
+
+function cu_spat_to_SHsphtor(cfg, Vt::CuArray{Float32}, Vp::CuArray{Float32}, Slm::CuArray{Complex{Float32}}, Tlm::CuArray{Complex{Float32}}, lmax)
+    ccall((:cu_spat_to_SHsphtor_float, libshtns), Nothing, (shtns_cfg,CuPtr{Float32},CuPtr{Float32},CuPtr{ComplexF32},CuPtr{ComplexF32}, Cint), cfg, Vt, Vp, Slm, Tlm, lmax)
+end
+
+function cu_SHsphtor_to_spat(cfg, Slm::CuArray{Complex{Float32}}, Tlm::CuArray{Complex{Float32}}, Vt::CuArray{Float32}, Vp::CuArray{Float32}, lmax)
+    ccall((:cu_SHsphtor_to_spat_float, libshtns), Nothing, (shtns_cfg,CuPtr{ComplexF32},CuPtr{ComplexF32},CuPtr{Float32},CuPtr{Float32}, Cint), cfg, Slm, Tlm, Vt, Vp, lmax)
+end
+
+function cu_spat_to_SHqst(cfg, Vr::CuArray{Float32}, Vt::CuArray{Float32}, Vp::CuArray{Float32}, Qlm::CuArray{Complex{Float32}}, Slm::CuArray{Complex{Float32}}, Tlm::CuArray{Complex{Float32}}, lmax)
+    ccall((:cu_spat_to_SHqst_float, libshtns), Nothing, (shtns_cfg,CuPtr{Float32},CuPtr{Float32},CuPtr{Float32},CuPtr{ComplexF32},CuPtr{ComplexF32},CuPtr{ComplexF32}, Cint), cfg, Vr, Vt, Vp, Qlm, Slm, Tlm, lmax)
+end
+
+function cu_SHqst_to_spat(cfg, Qlm::CuArray{Complex{Float32}}, Slm::CuArray{Complex{Float32}}, Tlm::CuArray{Complex{Float32}}, Vr::CuArray{Float32}, Vt::CuArray{Float32}, Vp::CuArray{Float32}, lmax)
+    ccall((:cu_SHqst_to_spat_float, libshtns), Nothing, (shtns_cfg,CuPtr{ComplexF32},CuPtr{ComplexF32},CuPtr{ComplexF32},CuPtr{Float32},CuPtr{Float32},CuPtr{Float32}, Cint), cfg, Qlm, Slm, Tlm, Vr, Vt, Vp, lmax)
 end

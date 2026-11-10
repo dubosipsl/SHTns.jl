@@ -79,7 +79,7 @@ SHTnsType is an abstract type for the spherical harmonic transform types. All su
 - `padding::Bool=false`
 - `gpu::Bool=false`
 - `southpolefirst::Bool=false`
-- `float32::Bool=false`
+- `float32::Bool=false` (CUDA only; requires Float32/ComplexF32 device arrays)
 """
 abstract type SHTnsType end
 
